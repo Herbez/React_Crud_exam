@@ -38,3 +38,30 @@ app.get('/api/viewstud', (req, res) => {
 
     });
 });
+
+app.post('/api/create', (req, res) => {
+
+    const { student_name, student_class } = req.body;
+
+    const checkuser = 'SELECT * FROM student WHERE student_name = ?';
+
+    db.query(checkuser, [student_name], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: "Database error", error: err });
+        }
+        if (results.length > 0) {
+            return res.status(400).json({ message: "Student already exists!" });
+        }
+
+        const sql = 'INSERT INTO student(student_name, student_class) VALUES(?,?)';
+
+        db.query(sql, [student_name, student_class], (err) => {
+            if (err) {
+                return res.status(500).json({ message: "Database error", error: err });
+            }
+            res.status(201).json({ message: 'Student created !' });
+        });
+
+    });
+
+});
