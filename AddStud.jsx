@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const AddStud = () => {
 
@@ -16,27 +16,29 @@ const AddStud = () => {
     const [student_name, setName] = useState();
     const [student_class, setClass] = useState();
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const SaveStud = (e) => {
         e.preventDefault();
         axios.post("http://localhost:5000/api/create", { student_name, student_class })
             .then(result => {
-                console.log(result)
-                navigate("/addstud");
+                console.log(result);
+                alert("Student saved successfully!");
+                window.location.reload(); // Refresh the page to update the table
             })
             .catch(err => console.log(err))
     }
 
     return (
 
-        <div className="ml-8">
+        <div className="ml-8 h-screen">
             <form onSubmit={SaveStud}>
                 <input type="text"
                     placeholder="Student name"
                     required
                     onChange={(e) => setName(e.target.value)}
-                    className="p-2 border border-2 border-gray-500 text-gray-500 "
+                    
+                    className="p-2 border border-2 border-gray-500"
                 /><br />
                 <input type="text"
                     placeholder="Enter Class"
@@ -53,17 +55,18 @@ const AddStud = () => {
 
 
 
-                <table className="border-2 border-gray-500">
-                    <thead className="border-2 border-gray-500"><th>Student Name</th>
+                <table >
+                    <thead >
+                        <th className="border-2 border-gray-500 p-2 ">Student Name</th>
                         <th className="border-2 border-gray-500">Class</th>
-                        <th className="border-2 border-gray-500"colSpan={2}>Action</th>
+                        <th className="border-2 border-gray-500" colSpan={2}>Action</th>
                     </thead>
                     <tbody >
                         {
                             students.map((stud, index) => (
                                 <tr key={index}  ><td className="border-2 border-gray-500 p-2">{stud.student_name}</td>
                                     <td className="border-2 border-gray-500 p-2">{stud.student_class}</td>
-                                    <td className="p-2"><button className="mt-2 bg-blue-500 p-1 mr-2 " >Edit</button>
+                                    <td className="p-2 border-2 border-gray-500"><button className="mt-2 bg-blue-500 p-1 mr-2 " >Edit</button>
                                         <button className="mt-2 bg-red-500   p-1">Delete</button></td>
                                 </tr>
                             ))
