@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const AddStud = () => {
 
@@ -16,18 +16,28 @@ const AddStud = () => {
     const [student_name, setName] = useState();
     const [student_class, setClass] = useState();
 
-    // const navigate = useNavigate();
-
     const SaveStud = (e) => {
         e.preventDefault();
         axios.post("http://localhost:5000/api/create", { student_name, student_class })
             .then(result => {
                 console.log(result);
                 alert("Student saved successfully!");
-                window.location.reload(); // Refresh the page to update the table
+                window.location.reload(); 
             })
             .catch(err => console.log(err))
     }
+
+    const handleDelete = (id) => {
+        axios.delete(`http://localhost:5000/api/delete/${id}`)
+            .then((res) => {
+                alert("Student deleted");
+                setStudents(prevUsers => prevUsers.filter(students => students.id !== id));
+            })
+            .catch((err) => {
+                console.error(err);
+                alert("Failed to delete user");
+            });
+    };
 
     return (
 
@@ -66,8 +76,13 @@ const AddStud = () => {
                             students.map((stud, index) => (
                                 <tr key={index}  ><td className="border-2 border-gray-500 p-2">{stud.student_name}</td>
                                     <td className="border-2 border-gray-500 p-2">{stud.student_class}</td>
-                                    <td className="p-2 border-2 border-gray-500"><button className="mt-2 bg-blue-500 p-1 mr-2 " >Edit</button>
-                                        <button className="mt-2 bg-red-500   p-1">Delete</button></td>
+                                    <td className="p-2 border-2 border-gray-500">
+                                        <button className="mt-2 bg-blue-500 p-1 mr-2 " >
+                                        <Link to={`/editstud/${stud.id}`}>Edit</Link></button>
+                                        <button className="mt-2 bg-red-500   p-1"
+                                        onClick={(e) => handleDelete(stud.id)}>
+                                        Delete</button>
+                                    </td>
                                 </tr>
                             ))
                         }
